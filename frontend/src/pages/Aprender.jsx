@@ -1,8 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Camara } from "../components/Camara";
+import { VisualizadorLetra } from "../components/VisualizadorLetra";
+import { GuiaAbecedario } from "../components/GuiaAbecedario";
+
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 export function Aprender() {
   const [target, setTarget] = useState("A");
+  const [prediction, setPrediction] = useState(null);
+
+  const isCorrect =
+    prediction?.letra === target && prediction?.confianza > 0.75;
+
+  function nextLetter() {
+    const currentIndex = LETTERS.indexOf(target);
+    if (currentIndex < LETTERS.length - 1) {
+      setTarget(LETTERS[currentIndex + 1]);
+      setPrediction(null);
+    }
+  }
 
   return (
     <div className="page-container">
@@ -12,20 +29,24 @@ export function Aprender() {
       </header>
       <div className="content-layout">
         <div className="camera-panel">
-          <div className="camera-placeholder">
-            <p>Cámara Web (Pronto disponible al conectar MediaPipe)</p>
-          </div>
+          <Camara onPrediction={setPrediction} />
         </div>
         <div className="sidebar-panel">
-          <div className="target-display">
-            <h3>Letra Objetivo</h3>
-            <div className="letter-large">{target}</div>
-          </div>
+          <GuiaAbecedario letter={target} />
+          <VisualizadorLetra prediction={prediction} target={target} />
+          {isCorrect && (
+            <button onClick={nextLetter} className="btn btn-primary btn-block">
+              Siguiente Letra →
+            </button>
+          )}
           <div className="letter-picker">
-            {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((l) => (
+            {LETTERS.map((l) => (
               <button
                 key={l}
-                onClick={() => setTarget(l)}
+                onClick={() => {
+                  setTarget(l);
+                  setPrediction(null);
+                }}
                 className={`letter-btn ${target === l ? "active" : ""}`}
               >
                 {l}

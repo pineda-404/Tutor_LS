@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Camara } from "../components/Camara";
+import { RetoDeletreo } from "../components/RetoDeletreo";
 
 export function Retos() {
-  const [word, setWord] = useState("HOLA");
+  const [prediction, setPrediction] = useState(null);
 
   return (
     <div className="page-container">
@@ -12,16 +14,10 @@ export function Retos() {
       </header>
       <div className="content-layout">
         <div className="camera-panel">
-          <div className="camera-placeholder">
-            <p>Cámara Web (Pronto disponible al conectar MediaPipe)</p>
-          </div>
+          <Camara onPrediction={setPrediction} />
         </div>
         <div className="sidebar-panel">
-          <div className="challenge-display">
-            <h3>Palabra a Deletrear</h3>
-            <div className="word-large">{word}</div>
-            <p>Comienza haciendo la primera seña.</p>
-          </div>
+          <RetoDeletreo prediction={prediction} />
         </div>
       </div>
     </div>
